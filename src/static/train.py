@@ -3,7 +3,7 @@ import pandas as pd
 from neural_net import MLP
 
 # --- CONFIGURATION ---
-CSV_FILE = "dataset_couleurs.csv"
+CSV_FILE = "../../data/static/dataset_couleurs.csv"
 HIDDEN_NEURONS = 30  # 30 neurones pour gérer 5 formes, c'est suffisant
 OUTPUT_CLASSES = 5  # Bleu, Vert, Jaune, Rouge, Orange
 EPOCHS = 10000  # Nombre de répétitions

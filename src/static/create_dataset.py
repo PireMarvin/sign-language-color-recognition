@@ -4,8 +4,10 @@ import numpy as np
 import csv
 import os
 
+from src.core.processing import normalize_landmarks
+
 # --- CONFIGURATION ---
-FILE_NAME = "dataset_couleurs.csv" # On change le nom pour ne pas mélanger
+FILE_NAME = "../../data/static/dataset_couleurs.csv"  # On change le nom pour ne pas mélanger
 CLASSES = {
     ord('b'): 0,  # Touche 'b' -> Bleu
     ord('v'): 1,  # Touche 'v' -> Vert
@@ -18,28 +20,6 @@ CLASSES = {
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_confidence=0.5)
-
-# --- FONCTION DE NORMALISATION ---
-def normalize_landmarks(landmarks):
-    """
-    Convertit la liste des points MediaPipe en une liste de 42 valeurs (x, y)
-    centrées sur le poignet et normalisées par la taille de la main.
-    """
-    #1. Convertir en tableau numpy pour faciliter les calculs
-    coords = np.array([[lm.x, lm.y] for lm in landmarks])
-
-    #2. Centrer sur le poignet (Point0)
-    wrist = coords[0]
-    coords = coords - wrist #soustraction vectorielle
-
-    #3. Mettre à l'échelle (invariance à la distance)
-    #on trouve la distance maximal entre le poignet et n'importe quel point
-    max_value = np.max(np.abs(coords))
-    if max_value > 0:
-        coord = coords / max_value
-
-    #4. Aplatir en une liste simple [x1, y1, x2, y2, ...]
-    return coords.flatten().tolist()
 
 # --- PREPARATION DU FICHIER CSV ---
 # Si le fichier n'existe pas, on le crée

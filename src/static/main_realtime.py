@@ -2,10 +2,11 @@ import cv2
 import mediapipe as mp
 import numpy as np
 from neural_net import MLP
+from src.core.processing import normalize_landmarks
 
 # --- CONFIGURATION ---
 CLASSES = ["BLEU", "VERT", "JAUNE", "ROUGE", "ORANGE"]
-MODEL_FILE = "modele_couleurs.npz"
+MODEL_FILE = "../../models/modele_couleurs.npz"
 HIDDEN_NEURONS = 30  # Doit être identique à l'entraînement !
 
 # --- 1. CHARGEMENT DU CERVEAU ---
@@ -18,18 +19,6 @@ try:
 except FileNotFoundError:
     print(f"❌ Erreur : Le fichier {MODEL_FILE} est introuvable. As-tu lancé train.py ?")
     exit()
-
-
-# --- 2. FONCTION DE NORMALISATION (Copier-coller de create_dataset) ---
-def normalize_landmarks(landmarks):
-    coords = np.array([[lm.x, lm.y] for lm in landmarks])
-    wrist = coords[0]
-    coords = coords - wrist
-    max_value = np.max(np.abs(coords))
-    if max_value > 0:
-        coords = coords / max_value
-    return coords.flatten().tolist()
-
 
 # --- 3. INITIALISATION CAMÉRA & MEDIAPIPE ---
 mp_hands = mp.solutions.hands
